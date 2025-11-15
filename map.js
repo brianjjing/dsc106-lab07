@@ -25,7 +25,7 @@ map.on('load', async () => {
     });
 
     map.addLayer({
-        id: 'bike-lanes',
+        id: 'boston-bike-lanes',
         type: 'line',
         source: 'boston_route',
         paint: {
@@ -41,7 +41,7 @@ map.on('load', async () => {
     });
 
     map.addLayer({
-        id: 'bike-lanes',
+        id: 'cambridge-bike-lanes',
         type: 'line',
         source: 'cambridge_route',
         paint: {
