@@ -92,7 +92,7 @@ map.on('load', async () => {
     });
 
     //Fetching and parsing the csv:
-    let jsonData;
+    let trips;
     let stations;
     try {
         const jsonurl = INPUT_BLUEBIKES_CSV_URL;
@@ -212,17 +212,21 @@ map.on('load', async () => {
     function updateScatterPlot(timeFilter) {
         // Get only the trips that match the selected time filter
         const filteredTrips = filterTripsbyTime(trips, timeFilter);
+        console.log('filtered trips gotten');
       
         // Recompute station traffic based on the filtered trips
         const filteredStations = computeStationTraffic(stations, filteredTrips);
+        console.log('filtered stations gotten');
       
         timeFilter === -1 ? radiusScale.range([0, 25]) : radiusScale.range([3, 50]);
+        console.log('radius scale gotten');
 
         // Update the scatterplot by adjusting the radius of circles
         circles
         .data(filteredStations, (d) => d.short_name) // Ensure D3 tracks elements correctly
         .join('circle')
         .attr('r', (d) => radiusScale(d.totalTraffic));
+        console.log('scatterplot updated');
     }
 
     timeSlider.addEventListener('input', updateTimeDisplay);
