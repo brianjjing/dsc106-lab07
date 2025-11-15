@@ -17,7 +17,28 @@
     <script src="map.js" type="module"></script>
   </head>
   <body>
-    <h1>Interactively visualizing bike traffic in the Boston area across different times of day.</h1>
+    <header>
+        <h1>Interactively visualizing bike traffic in the Boston area across different times of day.</h1>
+        <div id="time-filter">
+            <label>Filter bike station traffic by time of day:</label>
+
+            <div id="time-slider-container">
+                <input
+                    type="range"
+                    id="time-slider"
+                    min="-1"
+                    max="1440"
+                    value="-1"
+                    step="1"
+                />
+            </div>
+
+            <time id="selected-time">--:--</time>
+
+            <em id="any-time">(any time)</em>
+        </div>
+    </header>
+
     <div id="map">
         <svg></svg>
     </div>

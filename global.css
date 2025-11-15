@@ -1,3 +1,10 @@
+header {
+    display: flex;
+    align-items: baseline;
+    gap: 1em;
+    margin-bottom: 1em;
+}
+
 body {
     font: 100%/1.5 system-ui, sans-serif;
     display: flex;
@@ -7,4 +14,25 @@ body {
     box-sizing: border-box;
     margin: auto;
     padding: 1em;
+}
+
+#time-filter {
+    margin: 1em 0;
+}
+
+#selected-time,
+#any-time {
+  display: block;
+  margin-top: 0.4em;
+}
+
+#time-slider {
+  width: 300px;
+  margin-top: 0.4em;
+}
+
+/* Any time (edge values) looks different */
+#any-time {
+  color: #777;
+  font-style: italic;
 }
