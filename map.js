@@ -10,7 +10,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYnJpYW5qaW5neSIsImEiOiJjbWh6bTloMWEwYmdqMmlvZ
 // Initialize the map
 const map = new mapboxgl.Map({
     container: 'map', // ID of the div where the map will render
-    style: 'mapbox://styles/brianjingy/cmhzrim7a00kh01sublx7ayb5', // Map style
+    style: 'mapbox://styles/mapbox/streets-v12', // Map style
     center: [-71.09415, 42.36027], // [longitude, latitude] --> flipped order
     zoom: 12, // Initial zoom level
     minZoom: 5, // Minimum allowed zoom
@@ -28,10 +28,10 @@ map.on('load', async () => {
         type: 'line',
         source: 'boston_route',
         paint: {
-            'line-color': 'green',
-            'line-width': 3,
-            'line-opacity': 0.4,
-        },
+            'line-color': '#32D400',  // A bright green using hex code
+            'line-width': 5,          // Thicker lines
+            'line-opacity': 0.6
+        }
     });
 });
   
