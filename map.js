@@ -112,6 +112,14 @@ map.on('load', async () => {
     .enter()
     .append('circle')
     .attr('r', d => radiusScale(d.totalTraffic))
+    .each(function (d) {
+        // Add <title> for browser tooltips
+        d3.select(this)
+            .append('title')
+            .text(
+            `${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`,
+        );
+    });
 
 
     // Function to update circle positions when the map moves/zooms
