@@ -58,6 +58,9 @@ function computeStationTraffic(stations, trips) {
     });
 }
 
+//Discrete output colors for stations:
+let stationFlow = d3.scaleQuantize().domain([0, 1]).range([0, 0.5, 1]);
+
 map.on('load', async () => {
     map.addSource('boston_route', {
         type: 'geojson',
@@ -129,7 +132,10 @@ map.on('load', async () => {
     .selectAll('circle')
     .data(stations, (d) => d.short_name) // Use station short_name as the key
     .enter()
-    .append('circle');
+    .append('circle')
+    .style('--departure-ratio', (d) =>
+        stationFlow(d.departures / d.totalTraffic),
+      );
     // const circles = svg
     // .selectAll('circle')
     // .data(stations)
@@ -225,7 +231,10 @@ map.on('load', async () => {
         circles
         .data(filteredStations, (d) => d.short_name) // Ensure D3 tracks elements correctly
         .join('circle')
-        .attr('r', (d) => radiusScale(d.totalTraffic));
+        .attr('r', (d) => radiusScale(d.totalTraffic))
+        .style('--departure-ratio', (d) =>
+            stationFlow(d.departures / d.totalTraffic),
+        );
         console.log('scatterplot updated');
     }
 
