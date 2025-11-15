@@ -151,6 +151,8 @@ map.on('load', async () => {
         circles
         .attr('cx', (d) => getCoords(d).cx) // Set the x-position using projected coordinates
         .attr('cy', (d) => getCoords(d).cy); // Set the y-position using projected coordinates
+
+        console.log('positions updated');
     }
     
     // Initial position update when map loads
@@ -161,16 +163,22 @@ map.on('load', async () => {
     map.on('zoom', updatePositions); // Update during zooming
     map.on('resize', updatePositions); // Update on window resize
     map.on('moveend', updatePositions); // Final adjustment after movement ends
+    console.log('event handlers created (.on())');
 
-    const timeSlider = document.getElementById('#time-slider');
-    const selectedTime = document.getElementById('#selected-time');
-    const anyTimeLabel = document.getElementById('#any-time');
+    const timeSlider = document.getElementById('time-slider'); //The input
+    const selectedTime = document.getElementById('selected-time'); //The time
+    const anyTimeLabel = document.getElementById('any-time'); //The em
+    console.log('HTML elements gotten');
 
     //Func to update UI when slider moves:
     function updateTimeDisplay() {
         let timeFilter = Number(timeSlider.value); // Get slider value
-      
-        if (timeFilter === -1) {
+        console.log("Time Filter:");
+        console.log(timeFilter);
+        
+
+        if (timeFilter === -1) { //All trips regardless of time
+          console.log("timeFilter===-1");
           selectedTime.textContent = ''; // Clear time display
           anyTimeLabel.style.display = 'block'; // Show "(any time)"
         } else {
@@ -180,6 +188,7 @@ map.on('load', async () => {
       
         // Call updateScatterPlot to reflect the changes on the map
         updateScatterPlot(timeFilter);
+        console.log("updateScatterPlot called");
     }
 
     function minutesSinceMidnight(date) {
@@ -217,5 +226,7 @@ map.on('load', async () => {
     }
 
     timeSlider.addEventListener('input', updateTimeDisplay);
+    console.log("input event listener added");
     updateTimeDisplay();
+    console.log("updateTimeDisplay called");
 });
