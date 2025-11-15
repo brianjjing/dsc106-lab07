@@ -105,14 +105,15 @@ map.on('load', async () => {
         console.log('Loaded JSON Data:', jsonData); // Log to verify structure
         
         //within the map.on('load')
-        let trips = await d3.csv(
+        trips = await d3.csv(
             INPUT_BLUEBIKES_TRAFFIC_CSV_URL,
             (trip) => {
             trip.started_at = new Date(trip.started_at);
             trip.ended_at = new Date(trip.ended_at);
             return trip;
             },
-        );  
+        );
+        console.log('trips set');
         stations = computeStationTraffic(jsonData.data.stations, trips);
         console.log('Stations Array:', stations);
     } catch (error) {
