@@ -127,18 +127,23 @@ map.on('load', async () => {
     // Append circles to the SVG for each station
     const circles = svg
     .selectAll('circle')
-    .data(stations)
+    .data(stations, (d) => d.short_name) // Use station short_name as the key
     .enter()
-    .append('circle')
-    .attr('r', d => radiusScale(d.totalTraffic))
-    .each(function (d) {
-        // Add <title> for browser tooltips
-        d3.select(this)
-            .append('title')
-            .text(
-            `${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`,
-        );
-    });
+    .append('circle');
+    // const circles = svg
+    // .selectAll('circle')
+    // .data(stations)
+    // .enter()
+    // .append('circle')
+    // .attr('r', d => radiusScale(d.totalTraffic))
+    // .each(function (d) {
+    //     // Add <title> for browser tooltips
+    //     d3.select(this)
+    //         .append('title')
+    //         .text(
+    //         `${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`,
+    //     );
+    // });
 
 
     // Function to update circle positions when the map moves/zooms
@@ -202,11 +207,13 @@ map.on('load', async () => {
         // Recompute station traffic based on the filtered trips
         const filteredStations = computeStationTraffic(stations, filteredTrips);
       
+        timeFilter === -1 ? radiusScale.range([0, 25]) : radiusScale.range([3, 50]);
+
         // Update the scatterplot by adjusting the radius of circles
         circles
-          .data(filteredStations)
-          .join('circle') // Ensure the data is bound correctly
-          .attr('r', (d) => radiusScale(d.totalTraffic)); // Update circle sizes
+        .data(filteredStations, (d) => d.short_name) // Ensure D3 tracks elements correctly
+        .join('circle')
+        .attr('r', (d) => radiusScale(d.totalTraffic));
     }
 
     timeSlider.addEventListener('input', updateTimeDisplay);
