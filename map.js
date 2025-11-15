@@ -64,68 +64,69 @@ map.on('load', async () => {
 
     //Fetching and parsing the csv:
     let jsonData;
+    let stations;
     try {
         const jsonurl = INPUT_BLUEBIKES_CSV_URL;
 
         // Await JSON fetch
         const jsonData = await d3.json(jsonurl);
-
         console.log('Loaded JSON Data:', jsonData); // Log to verify structure
 
-        let stations = jsonData.data.stations;
+        stations = jsonData.data.stations;
         console.log('Stations Array:', stations);
-
-        //Marking bike stations:
-        const svg = d3.select('#map').select('svg');
-        // Append circles to the SVG for each station
-        const circles = svg
-        .selectAll('circle')
-        .data(stations)
-        .enter()
-        .append('circle')
-        .attr('r', 5) // Radius of the circle
-        .attr('fill', 'steelblue') // Circle fill color
-        .attr('stroke', 'white') // Circle border color
-        .attr('stroke-width', 1) // Circle border thickness
-        .attr('opacity', 0.8); // Circle opacity
-
-        // Function to update circle positions when the map moves/zooms
-        function updatePositions() {
-            circles
-            .attr('cx', (d) => getCoords(d).cx) // Set the x-position using projected coordinates
-            .attr('cy', (d) => getCoords(d).cy); // Set the y-position using projected coordinates
-        }
-        
-        // Initial position update when map loads
-        updatePositions();
-
-        // Reposition markers on map interactions
-        map.on('move', updatePositions); // Update during map movement
-        map.on('zoom', updatePositions); // Update during zooming
-        map.on('resize', updatePositions); // Update on window resize
-        map.on('moveend', updatePositions); // Final adjustment after movement ends
-
-
-        const trips = await d3.csv(INPUT_BLUEBIKES_TRAFFIC_CSV_URL);
-        const departures = d3.rollup(
-            trips,
-            (v) => v.length,
-            (d) => d.start_station_id,
-        );
-        const arrivals = d3.rollup(
-            trips,
-            (v) => v.length,
-            (d) => d.end_station_id,
-        );
-
-        stations = stations.map((station) => {
-            let id = station.short_name;
-            station.arrivals = arrivals.get(id) ?? 0;
-            station.departures = departures.get(id) ?? 0;
-            station.totalTraffic = station.arrivals + station.departures;
-            return station;
-        });
     } catch (error) {
         console.error('Error loading JSON:', error); // Handle errors
     }
+    
+
+    //Marking bike stations:
+    const svg = d3.select('#map').select('svg');
+    // Append circles to the SVG for each station
+    const circles = svg
+    .selectAll('circle')
+    .data(stations)
+    .enter()
+    .append('circle')
+    .attr('r', 5) // Radius of the circle
+    .attr('fill', 'steelblue') // Circle fill color
+    .attr('stroke', 'white') // Circle border color
+    .attr('stroke-width', 1) // Circle border thickness
+    .attr('opacity', 0.8); // Circle opacity
+
+    // Function to update circle positions when the map moves/zooms
+    function updatePositions() {
+        circles
+        .attr('cx', (d) => getCoords(d).cx) // Set the x-position using projected coordinates
+        .attr('cy', (d) => getCoords(d).cy); // Set the y-position using projected coordinates
+    }
+    
+    // Initial position update when map loads
+    updatePositions();
+
+    // Reposition markers on map interactions
+    map.on('move', updatePositions); // Update during map movement
+    map.on('zoom', updatePositions); // Update during zooming
+    map.on('resize', updatePositions); // Update on window resize
+    map.on('moveend', updatePositions); // Final adjustment after movement ends
+
+
+    const trips = await d3.csv(INPUT_BLUEBIKES_TRAFFIC_CSV_URL);
+    const departures = d3.rollup(
+        trips,
+        (v) => v.length,
+        (d) => d.start_station_id,
+    );
+    const arrivals = d3.rollup(
+        trips,
+        (v) => v.length,
+        (d) => d.end_station_id,
+    );
+
+    stations = stations.map((station) => {
+        let id = station.short_name;
+        station.arrivals = arrivals.get(id) ?? 0;
+        station.departures = departures.get(id) ?? 0;
+        station.totalTraffic = station.arrivals + station.departures;
+        return station;
+    });
 });
