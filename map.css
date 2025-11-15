@@ -29,4 +29,12 @@ svg circle {
     fill-opacity: 0.6;   /* 60% opacity */
     stroke: white;
     stroke-width: 1px;
+    --color-departures: steelblue;
+    --color-arrivals: darkorange;
+    --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+    );
+    fill: var(--color);
 }
