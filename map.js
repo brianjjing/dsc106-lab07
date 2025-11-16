@@ -38,31 +38,6 @@ function formatTime(minutes) {
     return date.toLocaleString('en-US', { timeStyle: 'short' }); // Format as HH:MM AM/PM
 }
 
-//Compute Station Traffic:
-function computeStationTraffic(stations, timeFilter = -1) {
-    // Retrieve filtered trips efficiently
-    const departures = d3.rollup(
-      filterByMinute(departuresByMinute, timeFilter), // Efficient retrieval
-      (v) => v.length,
-      (d) => d.start_station_id
-    );
-  
-    const arrivals = d3.rollup(
-      filterByMinute(arrivalsByMinute, timeFilter), // Efficient retrieval
-      (v) => v.length,
-      (d) => d.end_station_id
-    );
-  
-    // Update station data with filtered counts
-    return stations = stations.map((station) => {
-        let id = station.short_name;
-        station.arrivals = arrivals.get(id) ?? 0;
-        station.departures = departures.get(id) ?? 0;
-        station.totalTraffic = station.arrivals + station.departures;
-        return station;
-    });
-}
-
 //Discrete output colors for stations:
 let stationFlow = d3.scaleQuantize().domain([0, 1]).range([0, 0.5, 1]);
 
@@ -98,6 +73,50 @@ map.on('load', async () => {
             'line-opacity': 0.6
         }
     });
+
+    function filterByMinute(tripsByMinute, minute) {
+        if (minute === -1) {
+          return tripsByMinute.flat(); // No filtering, return all trips
+        }
+      
+        // Normalize both min and max minutes to the valid range [0, 1439]
+        let minMinute = (minute - 60 + 1440) % 1440;
+        let maxMinute = (minute + 60) % 1440;
+      
+        // Handle time filtering across midnight
+        if (minMinute > maxMinute) {
+          let beforeMidnight = tripsByMinute.slice(minMinute);
+          let afterMidnight = tripsByMinute.slice(0, maxMinute);
+          return beforeMidnight.concat(afterMidnight).flat();
+        } else {
+          return tripsByMinute.slice(minMinute, maxMinute).flat();
+        }
+    }
+
+    //Compute Station Traffic:
+    function computeStationTraffic(stations, timeFilter = -1) {
+        // Retrieve filtered trips efficiently
+        const departures = d3.rollup(
+        filterByMinute(departuresByMinute, timeFilter), // Efficient retrieval
+        (v) => v.length,
+        (d) => d.start_station_id
+        );
+    
+        const arrivals = d3.rollup(
+        filterByMinute(arrivalsByMinute, timeFilter), // Efficient retrieval
+        (v) => v.length,
+        (d) => d.end_station_id
+        );
+    
+        // Update station data with filtered counts
+        return stations = stations.map((station) => {
+            let id = station.short_name;
+            station.arrivals = arrivals.get(id) ?? 0;
+            station.departures = departures.get(id) ?? 0;
+            station.totalTraffic = station.arrivals + station.departures;
+            return station;
+        });
+    }
 
     //Fetching and parsing the csv:
     let trips;
@@ -216,24 +235,6 @@ map.on('load', async () => {
 
     function minutesSinceMidnight(date) {
         return date.getHours() * 60 + date.getMinutes();
-    }
-    function filterByMinute(tripsByMinute, minute) {
-        if (minute === -1) {
-          return tripsByMinute.flat(); // No filtering, return all trips
-        }
-      
-        // Normalize both min and max minutes to the valid range [0, 1439]
-        let minMinute = (minute - 60 + 1440) % 1440;
-        let maxMinute = (minute + 60) % 1440;
-      
-        // Handle time filtering across midnight
-        if (minMinute > maxMinute) {
-          let beforeMidnight = tripsByMinute.slice(minMinute);
-          let afterMidnight = tripsByMinute.slice(0, maxMinute);
-          return beforeMidnight.concat(afterMidnight).flat();
-        } else {
-          return tripsByMinute.slice(minMinute, maxMinute).flat();
-        }
     }
     // function filterTripsbyTime(trips, timeFilter) {
     //     return timeFilter === -1
