@@ -136,21 +136,22 @@ map.on('load', async () => {
     .append('circle')
     .style('--departure-ratio', (d) =>
         stationFlow(d.departures / d.totalTraffic),
-      );
+      )
+    .each(function (d) {
+        // Add <title> for browser tooltips
+        d3.select(this)
+            .append('title')
+            .text(
+            `${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`,
+        );
+    });
     // const circles = svg
     // .selectAll('circle')
     // .data(stations)
     // .enter()
     // .append('circle')
     // .attr('r', d => radiusScale(d.totalTraffic))
-    // .each(function (d) {
-    //     // Add <title> for browser tooltips
-    //     d3.select(this)
-    //         .append('title')
-    //         .text(
-    //         `${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`,
-    //     );
-    // });
+    
 
 
     // Function to update circle positions when the map moves/zooms
