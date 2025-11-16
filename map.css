@@ -49,3 +49,13 @@ svg circle {
   gap: 1rem;
   margin-top: 0.5rem;
 }
+
+/* Style each legend block */
+.legend > div {
+  background: var(--color);
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  font-weight: 600;
+  color: white;
+  border: 1px solid rgba(0,0,0,0.2);
+}
