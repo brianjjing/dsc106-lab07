@@ -134,6 +134,7 @@ map.on('load', async () => {
     .data(stations, (d) => d.short_name) // Use station short_name as the key
     .enter()
     .append('circle')
+    .attr('r', d => radiusScale(d.totalTraffic))
     .style('--departure-ratio', (d) =>
         stationFlow(d.departures / d.totalTraffic),
       )
@@ -145,14 +146,6 @@ map.on('load', async () => {
             `${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`,
         );
     });
-    // const circles = svg
-    // .selectAll('circle')
-    // .data(stations)
-    // .enter()
-    // .append('circle')
-    // .attr('r', d => radiusScale(d.totalTraffic))
-    
-
 
     // Function to update circle positions when the map moves/zooms
     function updatePositions() {
