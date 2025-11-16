@@ -24,17 +24,28 @@ body {
     pointer-events: none;
 }
 
+#map circle,
+.legend > div {
+    --color-departures: steelblue;
+    --color-arrivals: darkorange;
+    --color: color-mix(
+        in oklch,
+        var(--color-departures) calc(100% * var(--departure-ratio)),
+        var(--color-arrivals)
+    );
+}
+
 svg circle {
     fill: steelblue;
     fill-opacity: 0.6;   /* 60% opacity */
     stroke: white;
     stroke-width: 1px;
-    --color-departures: steelblue;
-    --color-arrivals: darkorange;
-    --color: color-mix(
-    in oklch,
-    var(--color-departures) calc(100% * var(--departure-ratio)),
-    var(--color-arrivals)
-    );
     fill: var(--color);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
 }
